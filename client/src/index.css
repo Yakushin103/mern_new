@@ -17,3 +17,13 @@ input.yellow-input:focus {
 input.yellow-input:focus + label {
   color: #ffeb3b!important;
 }
+
+.create-page span {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal.fade {
+  background: rgba(0, 0, 0, 0.5);
+  transition: .5s;
+}
