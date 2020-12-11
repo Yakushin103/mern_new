@@ -1,4 +1,5 @@
 @import 'materialize-css/dist/css/materialize.min.css';
+@import 'react-datepicker/dist/react-datepicker-cssmodules.css';
 
 input.yellow-input {
   border-bottom: 1px solid #fff!important;

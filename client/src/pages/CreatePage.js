@@ -5,6 +5,8 @@ import { AuthContext } from '../context/AuthContext.js'
 
 import { Dropdown } from '../components/Dropdown'
 import { ModalCat } from '../components/ModalCat'
+import { ModalAdd } from '../components/ModalAdd'
+
 
 import './CreatePage.css'
 
@@ -16,10 +18,12 @@ export const CreatePage = () => {
     const [options, setOptions] = useState([])
     const [category, setCategory] = useState('')
     const [newCategory, setNewCategory] = useState('')
-    const [form, setForm] = useState([])
     const [modal, setModal] = useState(false)
+    const [modalAdd, setModalAdd] = useState(false)
+    const [form, setForm] = useState([])
 
     const toggle = () => setModal(!modal)
+    const toggleAdd = () => setModalAdd(!modalAdd)
 
     const getLink = useCallback(async () => {
         try {
@@ -27,7 +31,12 @@ export const CreatePage = () => {
                 Authorization: `Bearer ${token}`
             })
             setOptions(fetched)
-        } catch (e) { }
+        } catch (e) {
+            if (e.message === 'Нет авторизации') {
+                auth.logout()
+                history.push('/')
+            }
+        }
     }, [token, request])
 
     useEffect(() => {
@@ -68,6 +77,8 @@ export const CreatePage = () => {
         toggle()
     }
 
+    const handleChangeNewData = (name, value) => {
+    }
 
 
     return (
@@ -93,19 +104,21 @@ export const CreatePage = () => {
                             cancelAddCategory={cancelAddCategory}
                         />
                     </div>
-                    <div className="input-field col s6">
-                        {/* <input onKeyPress={addCategory} value="Alvin" id="first_name2" type="text" className="validate" />
-                        <label className="active" for="first_name2">Add category</label> */}
-                    </div>
-                    <div className="input-field col s6">
-                        {/* <input onKeyPress={addCategory} value="Alvin" id="first_name2" type="text" className="validate" />
-                        <label className="active" for="first_name2">First Name</label> */}
-                    </div>
                 </div>
                 <div className="add-data-item">
-                    <button disabled={form.length > 0 ? false : true}>
+                    <button
+                        onClick={toggleAdd}
+                        disabled={category !== "" ? false : true}
+                    >
                         <i className="material-icons">add</i>
                     </button>
+                    <ModalAdd
+                        modal={modalAdd}
+                        setModal={setModalAdd}
+                        toggle={toggleAdd}
+                        handleChangeNewData={handleChangeNewData}
+                        form={form}
+                    />
                 </div>
 
             </div>
