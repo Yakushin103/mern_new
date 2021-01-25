@@ -11,11 +11,11 @@ export const DateKeeperAdd = ({startDate, setStartDate}) => {
 const handleDate = (date) => {
     setStartDate({
         ...startDate,
-        Date: date
+        date: date
     })
 }
 
   return (
-    <DatePicker selected={startDate.Date} onChange={date => handleDate(date)} />
+    <DatePicker selected={startDate.date} onChange={date => handleDate(date)} />
   )
 }

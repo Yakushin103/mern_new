@@ -2,10 +2,15 @@ import React, { useState, useEffect, useContext, useCallback } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useHttp } from '../hooks/http.hooks'
 import { AuthContext } from '../context/AuthContext.js'
+import { format } from 'date-fns'
+import { Button } from 'reactstrap'
 
 import { Dropdown } from '../components/Dropdown'
 import { ModalCat } from '../components/ModalCat'
 import { ModalAdd } from '../components/ModalAdd'
+import { ModalInfo } from '../components/ModalInfo'
+import { TablesData } from '../components/TablesData'
+import { Loader } from '../components/Loader'
 
 
 import './CreatePage.css'
@@ -16,14 +21,26 @@ export const CreatePage = () => {
     const auth = useContext(AuthContext)
     const { request } = useHttp()
     const [options, setOptions] = useState([])
+    const [optionsData, setOptionsData] = useState([])
     const [category, setCategory] = useState('')
     const [newCategory, setNewCategory] = useState('')
     const [modal, setModal] = useState(false)
     const [modalAdd, setModalAdd] = useState(false)
-    const [form, setForm] = useState([])
+    const [modalInfo, setModalInfo] = useState(false)
+    const [removeData, setRemoveData] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [formInput, setFormInput] = useState({
+        date: new Date(),
+        time: format(new Date(), `hh:mmb`),
+        bet: '',
+        coef: '',
+        plus: '',
+        sum: ''
+    })
 
     const toggle = () => setModal(!modal)
     const toggleAdd = () => setModalAdd(!modalAdd)
+    const toggleInfo = () => setModalInfo(!modalInfo)
 
     const getLink = useCallback(async () => {
         try {
@@ -31,12 +48,37 @@ export const CreatePage = () => {
                 Authorization: `Bearer ${token}`
             })
             setOptions(fetched)
+            setLoading(true)
+            // const fetchedData = await request('/api/categoryDate/all', 'GET', null, {
+            //     Authorization: `Bearer ${token}`
+            // })
+            // setOptionsData(fetchedData)
+            // setLoading(false)
+
+            const fetchedDataToday = await request(`/api/categoryDate/all/filter?filter=${new Date()}`, 'GET', null, {
+                Authorization: `Bearer ${token}`
+            })
+            setOptionsData(fetchedDataToday)
+            setLoading(false)
         } catch (e) {
             if (e.message === 'Нет авторизации') {
                 auth.logout()
                 history.push('/')
             }
         }
+    }, [token, request])
+
+    const getAllData = useCallback(async () => {
+        // const fetchedData = await request('/api/categoryDate/all', 'GET', null, {
+        //     Authorization: `Bearer ${token}`
+        // })
+        // setOptionsData(fetchedData)
+        // setLoading(false)
+        const fetchedDataToday = await request(`/api/categoryDate/all/filter?filter=${new Date()}`, 'GET', null, {
+            Authorization: `Bearer ${token}`
+        })
+        setOptionsData(fetchedDataToday)
+        setLoading(false)
     }, [token, request])
 
     useEffect(() => {
@@ -46,17 +88,6 @@ export const CreatePage = () => {
     useEffect(() => {
         window.M.updateTextFields()
     }, [])
-
-    // const pressHandler = async event => {
-    //     if (event.key === 'Enter') {
-    //         try {
-    //             const data = await request('/api/link/generate', 'POST', { from: link }, {
-    //                 Authorization: `Bearer ${auth.token}`
-    //             })
-    //             history.push(`/detail/${data.link._id}`)
-    //         } catch (e) { }
-    //     }
-    // }
 
     const addCategory = async () => {
         if (newCategory !== '') {
@@ -77,9 +108,46 @@ export const CreatePage = () => {
         toggle()
     }
 
-    const handleChangeNewData = (name, value) => {
+    const handleChangeNewData = async () => {
+        const categoryId = options.filter(item => item.name === category)
+        try {
+            const data = await request('/api/categoryDate/add', 'POST', { ...formInput, categoryId: categoryId[0]._id }, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setModalAdd(!modalAdd)
+            setFormInput({
+                date: new Date(),
+                time: format(new Date(), `hh:mmb`),
+                bet: '',
+                coef: '',
+                plus: '',
+                sum: ''
+            })
+            getAllData()
+        } catch (e) { }
     }
 
+    const handleRemoveData = (id) => {
+        setRemoveData(id)
+        toggleInfo()
+    }
+
+    const removeDataId = async () => {
+        try {
+            const data = await request(`/api/categoryDate/delete/${removeData}`, 'DELETE', {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setRemoveData('')
+            toggleInfo()
+            setLoading(true)
+            getAllData()
+        } catch (e) { }
+    }
+
+    const cancelRemoveDataId = () => {
+        setRemoveData('')
+        toggleInfo()
+    }
 
     return (
         <div className="row create-page">
@@ -106,33 +174,40 @@ export const CreatePage = () => {
                     </div>
                 </div>
                 <div className="add-data-item">
-                    <button
+                    <Button
+                        style={{ borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}
                         onClick={toggleAdd}
                         disabled={category !== "" ? false : true}
                     >
                         <i className="material-icons">add</i>
-                    </button>
+                    </Button>
                     <ModalAdd
                         modal={modalAdd}
                         setModal={setModalAdd}
                         toggle={toggleAdd}
                         handleChangeNewData={handleChangeNewData}
-                        form={form}
+                        formInput={formInput}
+                        setFormInput={setFormInput}
                     />
                 </div>
-
             </div>
-            {/* <div className="col s8 offset-s2" style={{ paddingTop: '2rem' }}>
-                <input
-                    placeholder="Вставьте ссылку"
-                    id="link"
-                    type="text"
-                    value={link}
-                    onChange={e => setLink(e.target.value)}
-                    onKeyPress={pressHandler}
+            <div className="add-data-tables">
+                {
+                    loading ?
+                        <Loader />
+                        :
+                        <TablesData
+                            optionsData={optionsData}
+                            handleRemoveData={handleRemoveData}
+                        />
+                }
+                <ModalInfo
+                    modal={modalInfo}
+                    toggle={toggleInfo}
+                    removeDataId={removeDataId}
+                    cancelRemoveDataId={cancelRemoveDataId}
                 />
-                <label htmlFor="link">Вставьте ссылку</label>
-            </div> */}
+            </div>
         </div>
     )
 }

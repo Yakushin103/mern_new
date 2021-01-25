@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
+import React from 'react'
 import TimeKeeper from 'react-timekeeper'
 
-export const TimeKeeperAdd = ({ time, setTime, showTime, setShowTime }) => {
-  // const [time, setTime] = useState('12:34pm')
+export const TimeKeeperAdd = ({ time, setTime, setShowTime }) => {
 
   return (
     <div style={{ position: 'absolute', zIndex: '999' }} >
