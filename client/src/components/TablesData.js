@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, Alert, Button } from 'reactstrap'
 import { format } from 'date-fns'
 
-export const TablesData = ({ optionsData, handleRemoveData }) => {
+export const TablesData = ({ optionsData, handleRemoveData, handleEditData }) => {
 
     const sumAllData = () => {
         return optionsData.reduce((acc, item) => acc + item.sum, 0)
@@ -37,7 +37,7 @@ export const TablesData = ({ optionsData, handleRemoveData }) => {
                                     {bet.sum}
                                 </td>
                                 <td style={{ display: "flex", justifyContent: 'center' }} className="actions">
-                                    <Button color="warning" style={{ marginRight: "2rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <Button onClick={() => handleEditData(bet._id)} color="warning" style={{ marginRight: "2rem", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                                         <i className="material-icons">edit</i>
                                     </Button>
                                     <Button onClick={() => handleRemoveData(bet._id)} color="danger" style={{ borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>

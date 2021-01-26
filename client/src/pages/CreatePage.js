@@ -8,6 +8,7 @@ import { Button } from 'reactstrap'
 import { Dropdown } from '../components/Dropdown'
 import { ModalCat } from '../components/ModalCat'
 import { ModalAdd } from '../components/ModalAdd'
+import { ModalEdit } from '../components/ModalEdit'
 import { ModalInfo } from '../components/ModalInfo'
 import { TablesData } from '../components/TablesData'
 import { Loader } from '../components/Loader'
@@ -26,6 +27,7 @@ export const CreatePage = () => {
     const [newCategory, setNewCategory] = useState('')
     const [modal, setModal] = useState(false)
     const [modalAdd, setModalAdd] = useState(false)
+    const [modalEdit, setModalEdit] = useState(false)
     const [modalInfo, setModalInfo] = useState(false)
     const [removeData, setRemoveData] = useState('')
     const [loading, setLoading] = useState(false)
@@ -40,6 +42,7 @@ export const CreatePage = () => {
 
     const toggle = () => setModal(!modal)
     const toggleAdd = () => setModalAdd(!modalAdd)
+    const toggleEdit = () => setModalEdit(!modalEdit)
     const toggleInfo = () => setModalInfo(!modalInfo)
 
     const getLink = useCallback(async () => {
@@ -144,6 +147,36 @@ export const CreatePage = () => {
         } catch (e) { }
     }
 
+    const handleEditData = (id) => {
+        let editData = optionsData.filter((item) => {
+            if ( item._id === id ) {
+                setFormInput({
+                    date: new Date(),
+                    time: item.time,
+                    bet: item.bet,
+                    coef: item.coef,
+                    plus: item.plus,
+                    sum: item.sum
+                })
+            }
+        })
+        // setRemoveData(id)
+        console.log('optionsData', editData)
+        toggleEdit()
+    }
+
+    const editDataId = async () => {
+        try {
+            // const data = await request(`/api/categoryDate/delete/${removeData}`, 'DELETE', {
+            //     Authorization: `Bearer ${auth.token}`
+            // })
+            // setRemoveData('')
+            // toggleInfo()
+            // setLoading(true)
+            // getAllData()
+        } catch (e) { }
+    }
+
     const cancelRemoveDataId = () => {
         setRemoveData('')
         toggleInfo()
@@ -189,6 +222,14 @@ export const CreatePage = () => {
                         formInput={formInput}
                         setFormInput={setFormInput}
                     />
+                    <ModalEdit
+                        modal={modalEdit}
+                        setModal={setModalEdit}
+                        toggle={toggleEdit}
+                        handleChangeNewData={handleChangeNewData}
+                        formInput={formInput}
+                        setFormInput={setFormInput}
+                    />
                 </div>
             </div>
             <div className="add-data-tables">
@@ -199,6 +240,7 @@ export const CreatePage = () => {
                         <TablesData
                             optionsData={optionsData}
                             handleRemoveData={handleRemoveData}
+                            handleEditData={handleEditData}
                         />
                 }
                 <ModalInfo

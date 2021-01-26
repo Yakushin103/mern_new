@@ -57,8 +57,10 @@ router.get(`/all/filter`, auth, async (req, res) => {
                 return item
             }
         })
-        
-        res.json(categoryesDataFilter)
+
+        const sortedDate = categoryesDataFilter.sort((a, b) => b.date > a.date ? 1 : -1)
+
+        res.json(sortedDate)
     } catch (e) {
         res.status(500).json({ message: 'Что то пошло не так, попробуйте снова' })
     }
