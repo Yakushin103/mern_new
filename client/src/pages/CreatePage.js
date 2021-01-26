@@ -151,7 +151,7 @@ export const CreatePage = () => {
     const handleEditData = (id) => {
         setEditData(id)
         let editData = optionsData.filter((item) => {
-            if ( item._id === id ) {
+            if (item._id === id) {
                 setFormInput({
                     date: new Date(),
                     time: item.time,
@@ -187,6 +187,10 @@ export const CreatePage = () => {
     const cancelRemoveDataId = () => {
         setRemoveData('')
         toggleInfo()
+    }
+
+    const sumAllData = () => {
+        return optionsData.length ? optionsData.reduce((acc, item) => acc + item.sum, 0) : 0
     }
 
     return (
@@ -238,6 +242,16 @@ export const CreatePage = () => {
                         setFormInput={setFormInput}
                     />
                 </div>
+            </div>
+            <div className="add-data-result">
+                <span
+                    style={{ color: sumAllData().toFixed(2) > 0 ? 'green' : '#dc3545', fontWeight: 'bold' }}
+                >
+                    {
+                        optionsData.length &&
+                        sumAllData().toFixed(2)
+                    }
+                </span>
             </div>
             <div className="add-data-tables">
                 {

@@ -2,26 +2,27 @@ import React, { useState, useEffect, useContext, useCallback } from 'react'
 import { useHttp } from '../hooks/http.hooks'
 import { AuthContext } from '../context/AuthContext.js'
 import { Loader } from '../components/Loader'
-import { LinksList } from '../components/LinksList'
+import { ChartsList } from '../components/ChartsList'
+import Chart from 'chart.js'
 
 export const LinksPage = () => {
     
     const { loading, request } = useHttp()
     const { token } = useContext(AuthContext)
-    const [links, setLinks] = useState([])
+    const [betsData, setBetsData] = useState([])
 
-    const fetchLinks = useCallback(async () => {
+    const fetchData = useCallback(async () => {
         try {
-            const fetched = await request('/api/link', 'GET', null, {
+            const fetchedData = await request('/api/categoryDate/all', 'GET', null, {
                 Authorization: `Bearer ${token}`
             })
-            setLinks(fetched)
+            setBetsData(fetchedData)
         } catch (e) { }
     }, [token, request])
 
     useEffect(() => {
-        fetchLinks()
-    }, [fetchLinks])
+        fetchData()
+    }, [fetchData])
 
     if (loading) {
         return <Loader />
@@ -29,7 +30,7 @@ export const LinksPage = () => {
 
     return (
         <>
-            { !loading && <LinksList links={links} />}
+            { !loading && <ChartsList betsData={betsData} />}
         </>
     )
 }

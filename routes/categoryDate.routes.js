@@ -87,8 +87,6 @@ router.put('/edit', auth, async (req, res) => {
     try {
         const { date, time, bet, coef, plus, sum, _id } = req.body
 
-        console.log('1111', date, time, bet, coef, plus, sum, _id)
-
         const existing = await CategoryDate.findOne({ _id })
 
         if (!existing) {
