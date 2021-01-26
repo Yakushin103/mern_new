@@ -253,6 +253,17 @@ export const CreatePage = () => {
                     }
                 </span>
             </div>
+            <div className="add-data-result" style={{ width: '50%' }}>
+                <span
+                    style={{ color: sumAllData().toFixed(2) > 0 ? 'green' : '#dc3545', fontWeight: 'bold' }}
+                >
+                    {
+                        sumAllData().toFixed(2) > 0 ?
+                            'Its a good result, but you can more and better' :
+                            'You need more concentration and fewer bets'
+                    }
+                </span>
+            </div>
             <div className="add-data-tables">
                 {
                     loading ?
