@@ -4,7 +4,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Input, Dr
 import { DateKeeperAdd } from './DateKeeperAdd'
 import { TimeKeeperAdd } from './TimeKeeperAdd'
 
-export const ModalEdit = ({ modal, toggle, formInput, setFormInput, handleChangeNewData }) => {
+export const ModalEdit = ({ modal, toggle, formInput, setFormInput, saveEditData }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false)
     const [showTime, setShowTime] = useState(false)
 
@@ -132,7 +132,7 @@ export const ModalEdit = ({ modal, toggle, formInput, setFormInput, handleChange
                     </Row>
                 </ModalBody>
                 <ModalFooter>
-                    <Button disabled={!ValidForm()} style={{ marginRight: '1rem' }} color="primary" onClick={handleChangeNewData}>Save</Button>{' '}
+                    <Button disabled={!ValidForm()} style={{ marginRight: '1rem' }} color="primary" onClick={saveEditData}>Save</Button>{' '}
                     <Button color="secondary" onClick={toggle}>Cancel</Button>
                 </ModalFooter>
             </Modal>

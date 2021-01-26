@@ -30,6 +30,7 @@ export const CreatePage = () => {
     const [modalEdit, setModalEdit] = useState(false)
     const [modalInfo, setModalInfo] = useState(false)
     const [removeData, setRemoveData] = useState('')
+    const [editData, setEditData] = useState('')
     const [loading, setLoading] = useState(false)
     const [formInput, setFormInput] = useState({
         date: new Date(),
@@ -148,6 +149,7 @@ export const CreatePage = () => {
     }
 
     const handleEditData = (id) => {
+        setEditData(id)
         let editData = optionsData.filter((item) => {
             if ( item._id === id ) {
                 setFormInput({
@@ -160,20 +162,25 @@ export const CreatePage = () => {
                 })
             }
         })
-        // setRemoveData(id)
-        console.log('optionsData', editData)
         toggleEdit()
     }
 
     const editDataId = async () => {
         try {
-            // const data = await request(`/api/categoryDate/delete/${removeData}`, 'DELETE', {
-            //     Authorization: `Bearer ${auth.token}`
-            // })
-            // setRemoveData('')
-            // toggleInfo()
-            // setLoading(true)
-            // getAllData()
+            const data = await request('/api/categoryDate/edit', 'PUT', { ...formInput, _id: editData }, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setModalEdit(!modalEdit)
+            setFormInput({
+                date: new Date(),
+                time: format(new Date(), `hh:mmb`),
+                bet: '',
+                coef: '',
+                plus: '',
+                sum: ''
+            })
+            setEditData('')
+            getAllData()
         } catch (e) { }
     }
 
@@ -226,7 +233,7 @@ export const CreatePage = () => {
                         modal={modalEdit}
                         setModal={setModalEdit}
                         toggle={toggleEdit}
-                        handleChangeNewData={handleChangeNewData}
+                        saveEditData={editDataId}
                         formInput={formInput}
                         setFormInput={setFormInput}
                     />

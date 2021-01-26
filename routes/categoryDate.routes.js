@@ -46,8 +46,6 @@ router.get(`/all/filter`, auth, async (req, res) => {
 
         const startDayFilter = moment().startOf('day', dayFilter).format("MMM Do YY")
 
-        const endDayFilter = moment().endOf('day', dayFilter)
-
         const categoryesData = await CategoryDate.find({ owner: req.user.userId })
 
         const categoryesDataFilter = categoryesData.filter((item) => {
@@ -80,6 +78,28 @@ router.delete('/delete/:id', async (req, res) => {
         const categoryDate = await CategoryDate.deleteOne({ _id })
 
         res.status(201).json({ categoryDate })
+    } catch (e) {
+        res.status(500).json({ message: 'Что то пошло не так, попробуйте снова' })
+    }
+})
+
+router.put('/edit', auth, async (req, res) => {
+    try {
+        const { date, time, bet, coef, plus, sum, _id } = req.body
+
+        console.log('1111', date, time, bet, coef, plus, sum, _id)
+
+        const existing = await CategoryDate.findOne({ _id })
+
+        if (!existing) {
+            return res.json({ name: _id })
+        }
+
+        const updateDate = await existing.updateOne({
+            date, time, bet, coef, plus, sum
+        })
+
+        res.status(201).json({ updateDate })
     } catch (e) {
         res.status(500).json({ message: 'Что то пошло не так, попробуйте снова' })
     }
