@@ -55,8 +55,6 @@ export const AuthPage = () => {
         } catch (e) { }
     }
 
-    console.log(form.password === '')
-
     return (
         <div className="auth-page">
             <div className="auth-page-card">
