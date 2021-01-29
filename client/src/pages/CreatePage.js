@@ -10,6 +10,7 @@ import { ModalCat } from '../components/ModalCat'
 import { ModalAdd } from '../components/ModalAdd'
 import { ModalEdit } from '../components/ModalEdit'
 import { ModalInfo } from '../components/ModalInfo'
+import { ModalWarning } from '../components/ModalWarning'
 import { TablesData } from '../components/TablesData'
 import { Loader } from '../components/Loader'
 
@@ -26,6 +27,7 @@ export const CreatePage = () => {
     const [category, setCategory] = useState('')
     const [newCategory, setNewCategory] = useState('')
     const [modal, setModal] = useState(false)
+    const [modalWarning, setModalWarning] = useState([false, 0])
     const [modalAdd, setModalAdd] = useState(false)
     const [modalEdit, setModalEdit] = useState(false)
     const [modalInfo, setModalInfo] = useState(false)
@@ -45,6 +47,7 @@ export const CreatePage = () => {
     const toggleAdd = () => setModalAdd(!modalAdd)
     const toggleEdit = () => setModalEdit(!modalEdit)
     const toggleInfo = () => setModalInfo(!modalInfo)
+    const toggleWarning = () => setModalWarning([!modalWarning, 0])
 
     const getLink = useCallback(async () => {
         try {
@@ -64,6 +67,7 @@ export const CreatePage = () => {
             })
             setOptionsData(fetchedDataToday)
             setLoading(false)
+
         } catch (e) {
             if (e.message === 'Нет авторизации') {
                 auth.logout()
@@ -83,6 +87,27 @@ export const CreatePage = () => {
         })
         setOptionsData(fetchedDataToday)
         setLoading(false)
+
+        let lastFive = []
+        let lastTen = []
+
+        let lastBet = fetchedDataToday.map((item, i) => {
+            if ( i < 5 && item.plus === 'Neg' ) {
+                return lastFive.push(item)
+            }
+            if ( i < 10 && item.plus === 'Neg' ) {
+                return lastTen.push(item)
+            }
+        })
+
+        if ( lastFive.length === 5 ) {
+            setModalWarning([true, 5])
+        }
+
+        if ( lastTen.length === 10 ) {
+            setModalWarning([true, 10])
+        }
+
     }, [token, request])
 
     useEffect(() => {
@@ -280,6 +305,10 @@ export const CreatePage = () => {
                     toggle={toggleInfo}
                     removeDataId={removeDataId}
                     cancelRemoveDataId={cancelRemoveDataId}
+                />
+                <ModalWarning
+                    modal={modalWarning}
+                    toggle={toggleWarning}
                 />
             </div>
         </div>

@@ -22,8 +22,6 @@ export const ChartsList = ({ betsData }) => {
         ]
     }
 
-    console.log('1111', betsData)
-
     return (
         <div className="charts-bar">
             <span>Bar this your static</span>

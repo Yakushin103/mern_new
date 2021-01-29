@@ -7,7 +7,7 @@ input.yellow-input {
 }
 
 input.yellow-input + label {
-  color: #fff!important;
+  color: black!important;
 }
 
 input.yellow-input:focus {
@@ -26,5 +26,10 @@ input.yellow-input:focus + label {
 
 .modal.fade {
   background: rgba(0, 0, 0, 0.5);
+  color: black;
   transition: .5s;
+}
+
+.toast {
+  color: black!important;
 }

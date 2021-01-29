@@ -47,6 +47,50 @@ router.post(
         }
     })
 
+// /api/auth/checkLogin
+router.post('/checkLogin',
+    [
+        check('email', 'Введите корректный email').normalizeEmail().isEmail(),
+        // check('password', 'Введите пароль').exists()
+    ],
+    async (req, res) => {
+        try {
+            const errors = validationResult(req)
+
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    errors: errors.array(),
+                    message: 'Неккоректные данные при входе в систему'
+                })
+            }
+
+            const { email } = req.body
+
+            const user = await User.findOne({ email })
+
+            if (!user) {
+                return res.json({ user: 'none' })
+            }
+
+            // const isMatch = await bcrypt.compare(password, user.password)
+
+            // if (!isMatch) {
+            //     return res.status(400).json({ message: 'Неверный пароль попробуйте снова' })
+            // }
+
+            // const token = jwt.sign(
+            //     { userId: user.id },
+            //     config.get('jwtSecret'),
+            //     { expiresIn: '1d' }
+            // )
+
+            res.json({ user: 'exists' })
+
+        } catch (e) {
+            res.status(500).json({ message: 'Что то пошло не так, попробуйте снова' })
+        }
+    })
+
 // /api/auth/login
 router.post('/login',
     [
@@ -81,7 +125,7 @@ router.post('/login',
             const token = jwt.sign(
                 { userId: user.id },
                 config.get('jwtSecret'),
-                { expiresIn: '1h' }
+                { expiresIn: '1d' }
             )
 
             res.json({ token, userId: user.id })

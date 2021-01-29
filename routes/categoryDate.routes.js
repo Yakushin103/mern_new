@@ -3,10 +3,19 @@ const { Router } = require('express')
 const moment = require('moment')
 const shortid = require('shortid')
 const CategoryDate = require('../models/CategoryDate')
+const StaticForDay = require('../models/StaticForDay')
 const auth = require('../middleware/auth.middleware')
 const router = Router()
 
 // add new category data
+
+const sumAllData = (name, arr) => {
+    return arr.length ? arr.reduce((acc, item) => acc + item[name], 0) : 0
+}
+
+const sumAllPlus = (name, arr) => {
+    return arr.filter(item => item.plus === name)
+}
 
 router.post('/add', auth, async (req, res) => {
     try {
@@ -19,6 +28,46 @@ router.post('/add', auth, async (req, res) => {
         })
 
         await categoryDate.save()
+
+        // =========
+
+        // const categoryesData = await CategoryDate.find({ owner: req.user.userId })
+
+        // const dayFilter = moment().startOf('day', date).format("MMM Do YY")
+
+        // const categoryesDataFilter = categoryesData.filter((item) => {
+        //     let today = item.date
+
+        //     if (dayFilter === moment(today).format("MMM Do YY")) {
+        //         return item
+        //     }
+        // })
+
+        // const codeStatic = shortid.generate()
+        // const totalAmount = sumAllData('sum', categoryesDataFilter)
+        // const totalPos = sumAllPlus('Pos', categoryesDataFilter).length
+        // const totalNeg = sumAllPlus('Neg', categoryesDataFilter).length
+        // const totalSmo = sumAllPlus('Smo', categoryesDataFilter).length
+        // const totalBets = categoryesDataFilter.length
+
+        // const existing = await StaticForDay.findOne({ date: dayFilter })
+
+        // if (existing) {
+        //     console.log('1111', existing)
+        //     const updateDate = await existing.updateMany({
+        //         totalPos, totalNeg, totalSmo, totalBets
+        //     })
+        // } else {
+        //     const staticForDay = new StaticForDay({
+        //         codeStatic, owner: req.user.userId, categoryId, totalAmount, date: dayFilter, totalPos, totalNeg, totalSmo, totalBets
+        //     })
+
+        //     await staticForDay.save()
+        // }
+
+        // console.log('staticForDay', staticForDay)
+
+        // ========
 
         res.status(201).json({ categoryDate })
     } catch (e) {
@@ -51,7 +100,7 @@ router.get(`/all/filter`, auth, async (req, res) => {
         const categoryesDataFilter = categoryesData.filter((item) => {
             let today = item.date
 
-            if ( startDayFilter === moment(today).format("MMM Do YY") ) {
+            if (startDayFilter === moment(today).format("MMM Do YY")) {
                 return item
             }
         })

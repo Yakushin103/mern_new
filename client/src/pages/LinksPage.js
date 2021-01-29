@@ -13,10 +13,10 @@ export const LinksPage = () => {
 
     const fetchData = useCallback(async () => {
         try {
-            const fetchedData = await request('/api/categoryDate/all', 'GET', null, {
-                Authorization: `Bearer ${token}`
-            })
-            setBetsData(fetchedData)
+            // const fetchedData = await request('/api/categoryDate/all', 'GET', null, {
+            //     Authorization: `Bearer ${token}`
+            // })
+            // setBetsData(fetchedData)
         } catch (e) { }
     }, [token, request])
 
