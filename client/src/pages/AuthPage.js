@@ -118,7 +118,7 @@ export const AuthPage = () => {
                             You not registration
                         </h4>
                         <p>
-                            You can write to me on <a href='#'></a> or <a href='#'></a>
+                            You can write to me on <a href='https://www.facebook.com/vasso.yakushin'>FB</a> or <a href='https://vk.com/vasoyakushin103'>VK</a>
                         </p>
                         <Button
                             disabled={form.email === '' ? true : false}
